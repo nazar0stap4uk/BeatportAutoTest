@@ -1,0 +1,14 @@
+# Configuration files
+config/
+
+# Залежності проекту.
+node_modules/
+package-lock.json
+package.json
+playwright.config.ts
+tsconfig.json
+
+# Test Results
+test-results/
+
+

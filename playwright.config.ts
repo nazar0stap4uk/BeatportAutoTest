@@ -1,10 +1,10 @@
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
-  testDir: './src/tests',
-  retries: 2,
+  testDir: './tests',
+  retries: 0,
   use: {
-	headless: true,
+	headless: false,
 	baseURL: 'https://www.ukr.net/',
 	viewport: { width: 1280, height: 720 },
 	screenshot: 'only-on-failure',

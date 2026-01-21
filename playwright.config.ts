@@ -2,12 +2,16 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './tests',
-  retries: 0,
+  timeout: 60000,  // 60 секунд для кожного тесту
+  expect: {
+    timeout: 10000,
+  },
   use: {
-	headless: false,
-	baseURL: 'https://www.ukr.net/',
-	viewport: { width: 1280, height: 720 },
-	screenshot: 'only-on-failure',
+    baseURL: 'https://www.ukr.net/',
+    headless: false,
+    viewport: { width: 1280, height: 720 },
+    screenshot: 'only-on-failure',
+    navigationTimeout: 60000,
   },
   projects: [
 	{

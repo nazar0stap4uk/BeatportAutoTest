@@ -1,0 +1,33 @@
+{
+  "name": "beatportautotest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.3.0",
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.9",
+    "@types/pg": "^8.20.0",
+    "playwright": "^1.57.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nazar0stap4uk/BeatportAutoTest.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nazar0stap4uk/BeatportAutoTest/issues"
+  },
+  "homepage": "https://github.com/nazar0stap4uk/BeatportAutoTest#readme",
+  "description": "",
+  "dependencies": {
+    "pg": "^8.20.0"
+  }
+}

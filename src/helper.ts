@@ -1,21 +1,23 @@
-import { expect, request } from '@playwright/test';
 
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5162';
 
-export async function getToken(user: string, password: string) {
+export async function getToken(emailAddress: string, password: string): Promise<string> {
+  const response = await fetch(`${API_BASE_URL}/sessions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      emailAddress,
+      password,
+    }),
+  });
 
-    const apiContext = await request.newContext();
-    const response = await apiContext.post('http://localhost:5162/sessions', {
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        data: JSON.stringify({
-            emailAddress: user,
-            password: password
-        })
-    });
+  if (!response.ok) {
+    throw new Error(`Login failed with status ${response.status}`);
+  }
 
-    const responseBody = await response.json();
-    const accessToken = responseBody.accessToken;
-    return accessToken;
+  const data = await response.json() as any;
+  return data.accessToken || data.token;
 }
+

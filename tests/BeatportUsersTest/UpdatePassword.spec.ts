@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { getToken } from '../../src/helper';
-import { faker } from '@faker-js/faker';
+import { faker, ne } from '@faker-js/faker';
 import { api } from 'config/api-endpoins';
-import { c } from '@faker-js/faker/dist/airline-Dz1uGqgJ';
+import { query } from 'config/db-config';
+
 
 
 test('Update Password', async ({ request }) => {
@@ -24,6 +25,9 @@ test('Update Password', async ({ request }) => {
             password: password
         })
     });
+
+    const passwordQueryResult = await query(`SELECT "PasswordHash" FROM public."Users" WHERE "EmailAddress" = '${emailAddress}'`);
+    var originalPasswordHash = passwordQueryResult[0].PasswordHash;
 
 
     const accessToken = await getToken(emailAddress, password);
@@ -64,9 +68,16 @@ test('Update Password', async ({ request }) => {
         })
     });
 
-    expect(updateResponse.status()).toBe(204);
-    //console.log('Generated password:', password);
-    //console.log('Generated and updated password:', newPassword);
-    console.log('Password updated successfully');
-
+    await test.step('Verify password update', async () => {
+        //Check status code
+        //console.log('Generated password:', password);
+        //console.log('Generated and updated password:', newPassword);
+        expect(updateResponse.status()).toBe(204);
+        //Check database password update
+        const newPasswordQueryResult = await query(`SELECT "PasswordHash" FROM public."Users" WHERE "EmailAddress" = '${emailAddress}'`);
+        expect(newPasswordQueryResult[0].PasswordHash).not.toBe(originalPasswordHash);
+        console.log('Password updated successfully');
+        //console.log('Original Password Hash:', originalPasswordHash);
+        //console.log('New Password Hash:', newPasswordQueryResult[0].PasswordHash);  
+    });
 });

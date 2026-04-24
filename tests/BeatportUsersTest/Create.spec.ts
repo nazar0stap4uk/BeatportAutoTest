@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { api } from 'config/api-endpoins';
-//import { create } from 'node:domain'; ????
+import { query } from '../../config/db-config';
 
 test('POST Create User', async ({ request }) => {
 
@@ -17,7 +17,7 @@ test('POST Create User', async ({ request }) => {
   });
 
   await test.step('Send POST request to create user', async () => {
-     response = await request.post(api.users.create, {
+    response = await request.post(api.users.create, {
       headers: {
         'Content-Type': 'application/json'
       },
@@ -29,10 +29,15 @@ test('POST Create User', async ({ request }) => {
   });
 
   await test.step('Verify user creation', async () => {
+    //Check status code
     expect(response.status()).toBe(201);
-    // DB query to verify user creation  added here needed
-    //console.log('status code:', response.status());
+    //Check database user creation
+    const emailQueryResult = await query(`SELECT "EmailAddress" FROM public."Users" WHERE "EmailAddress" = '${emailAddress}'`);
+    // expect(emailQueryResult).toBeDefined();
+    // expect(Array.isArray(emailQueryResult)).toBe(true);
+    // expect(emailQueryResult.length).toBeGreaterThan(0);
+    expect(emailQueryResult[0].EmailAddress).toBe(emailAddress);
+    //console.log('User created successfully with email:', emailAddress);
     console.log('User created successfully');
   });
-
 });

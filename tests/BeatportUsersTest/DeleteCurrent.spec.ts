@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { getToken } from '../../src/helper';
 import { faker } from '@faker-js/faker';
 import { api } from 'config/api-endpoins';
+import { query } from '../../config/db-config';
 
 
 test('Delete Current', async ({ request }) => {
@@ -58,7 +59,12 @@ test('Delete Current', async ({ request }) => {
         },
     });
 
-    expect(deleteResponse.status()).toBe(204);
-    console.log('User deleted successfully');
-
+    await test.step('Verify user deletion', async () => {
+        //Check status code
+        expect(deleteResponse.status()).toBe(204);
+        //Check database to confirm user deletion
+        const emailQueryResult = await query(`SELECT "EmailAddress" FROM public."Users" WHERE "EmailAddress" = '${emailAddress}'`);
+        expect(emailQueryResult.length).toBe(0);
+        console.log('User deleted successfully');
+    });
 });

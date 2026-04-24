@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { getToken } from '../../src/helper';
 import { faker } from '@faker-js/faker';
 import { api } from 'config/api-endpoins';
+import { query } from '../../config/db-config';
 
 
 test('GET Details', async ({ request }) => {
@@ -48,7 +49,7 @@ test('GET Details', async ({ request }) => {
 
     expect(getdetails.status()).toBe(200);
     const detailsBody2 = await getdetails.json();
-    //console.log('User Details:', detailsBody2);
+    //console.log('User Details:', detailsBody);
     console.log('User Details received successfully');
 
 });

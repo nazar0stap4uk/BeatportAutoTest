@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { getToken } from '../../src/helper';
 import { faker } from '@faker-js/faker';
 import { api } from 'config/api-endpoins';
+import { query } from 'config/db-config';
 
 
 test('Update Email Address', async ({ request }) => {
@@ -63,9 +64,14 @@ test('Update Email Address', async ({ request }) => {
         })
     });
 
-    expect(updateResponse.status()).toBe(204);
-    //console.log('Generated email:', emailAddress)
-    //console.log('Generated and updated email address:', newEmailAddress);
-    console.log('Email address updated successfully');
-
+    await test.step('Verify email address update', async () => {
+        //Check status code
+        expect(updateResponse.status()).toBe(204);
+        //Check database email address update
+        const emailQueryResult = await query(`SELECT "EmailAddress" FROM public."Users" WHERE "EmailAddress" = '${newEmailAddress}'`);
+        expect(emailQueryResult[0].EmailAddress).toBe(newEmailAddress);
+        //console.log('Generated email:', emailAddress)
+        //console.log('Generated and updated email address:', newEmailAddress);
+        console.log('Email address updated successfully');
+    });
 });

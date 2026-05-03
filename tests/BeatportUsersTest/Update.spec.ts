@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { getToken } from '../../src/helper';
 import { faker } from '@faker-js/faker';
 import { api } from 'config/api-endpoins';
+import { query } from 'config/db-config';
 
 
 test('Update', async ({ request }) => {
@@ -64,33 +65,16 @@ test('Update', async ({ request }) => {
         })
     });
 
-    expect(updateResponse.status()).toBe(204);
-    //console.log('Generated and updated firstName:', firstName);
-    //console.log('Generated and updated lastName:', lastName);
-    console.log(`User firstName and lastName updated successfully`);
+    await test.step('Verify user update', async () => {
+        //Check status code
+        expect(updateResponse.status()).toBe(204);
+        //Check database user update
+        const emailQueryResult = await query(`SELECT "FirstName", "LastName" FROM public."Users" WHERE "EmailAddress" = '${emailAddress}'`);
+        expect(emailQueryResult[0].FirstName).toBe(firstName);
+        expect(emailQueryResult[0].LastName).toBe(lastName);
 
-
-    // //const updateBody = await updateResponse.json();
-    // //console.log('Update Response:', updateBody);
-
-    // // Verify update was successful
-    // expect(updateBody).toBeTruthy();
-    // expect(updateBody.message).toContain('update successfully');
-
-    // // Get user details to verify updated firstName and lastName
-    // const getDetailsAfterUpdate = await request.get(api.users.getDetails, {
-    //     headers: {
-    //         'Authorization': `Bearer ${accessToken}`
-    //     }
-    // });
-
-    // expect(getDetailsAfterUpdate.status()).toBe(200);
-    // const detailsAfterUpdate = await getDetailsAfterUpdate.json();
-    // console.log('User Details After Update:', detailsAfterUpdate);
-
-    // // Compare and verify firstName and lastName match
-    // expect(detailsAfterUpdate.firstName).toBe(firstName);
-    // expect(detailsAfterUpdate.lastName).toBe(lastName);
-    // console.log(`✓ Update verified: firstName='${firstName}', lastName='${lastName}'`);
-
+        console.log('User updated successfully');
+        //console.log('Generated and updated firstName:', firstName);
+        //console.log('Generated and updated lastName:', lastName);
+    });
 });

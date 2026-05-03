@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 import { getToken } from '../../src/helper';
 import { faker, tr } from '@faker-js/faker';
 import { api } from 'config/api-endpoins';
-import { S } from '@faker-js/faker/dist/airline-Dz1uGqgJ';
+import { query } from 'config/db-config';
+import { A } from 'node_modules/@faker-js/faker/dist/airline-Dz1uGqgJ';
+
 
 
 test('Update', async ({ request }) => {
@@ -64,7 +66,11 @@ test('Update', async ({ request }) => {
         })
     });
 
-    expect(updateResponse.status()).toBe(204);
-    console.log('Status updated successfully');
+    await test.step('Verify status update', async () => {
+        expect(updateResponse.status()).toBe(204);
+        const statusQueryResult = await query(`SELECT "Status" FROM public."Users" WHERE "EmailAddress" = '${emailAddress}'`);
+        expect(statusQueryResult[0].Status).toBe('Active');
+        console.log('Status updated successfully');
+    });
 
 });
